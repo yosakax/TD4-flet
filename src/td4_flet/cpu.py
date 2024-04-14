@@ -1,7 +1,7 @@
+from td4_flet.opcode import OpCode
 from td4_flet.port import Port
 from td4_flet.register import Register
 from td4_flet.rom import Rom
-from td4_flet.opcode import OpCode
 
 
 class Cpu:
@@ -11,6 +11,15 @@ class Cpu:
         self.register = Register()
         self.rom = Rom()
         self.port = Port()
+        self.mnimonic: list[str] = ["nop"] * 16
+
+    def reset(self):
+        self.pc: int = 0
+        self.carry: bool = False
+        self.register = Register()
+        self.rom = Rom()
+        self.port = Port()
+        self.mnimonic: list[str] = ["nop"] * 16
 
     def fetch(self) -> tuple[int, int]:
         memory = self.rom.memory[self.pc]

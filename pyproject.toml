@@ -16,6 +16,7 @@ build-backend = "hatchling.build"
 managed = true
 dev-dependencies = [
     "ruff>=0.3.7",
+    "isort>=5.13.2",
 ]
 
 [tool.hatch.metadata]
@@ -23,3 +24,15 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/td4_flet"]
+
+[tool.ruff]
+include = ["*.py"]
+
+[tool.ruff.isort]
+combine-as-imports = true
+known-first-party = ["musubi_restapi"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+split-on-trailing-comma = true
+
+[tool.ruff.format]
+quote-style = "double"

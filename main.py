@@ -1,7 +1,9 @@
-import flet as ft
-import time
 import random
-from src.td4_flet.cpu import Cpu
+import time
+
+import flet as ft
+
+from src.td4_flet import Cpu
 
 
 def main(page: ft.Page):
@@ -28,6 +30,8 @@ def main(page: ft.Page):
                 leds[cpu.register.b >> (4 - i - 1) & 1], size=50
             )
         pc_text.value = f"Programm Counter: {cpu.pc:04b}"
+        carry_text.value = f"Carry flag: {int(cpu.carry)}"
+        return
 
     def execute(e):
         cpu.execute()
@@ -42,11 +46,11 @@ def main(page: ft.Page):
         cpu.port.output = "0000"
         cpu.pc = 0
         cpu.carry = False
-        output()
+        # output()
         total = []
         for i in range(16):
             tmp = []
-            for j, bit in enumerate(roms[i].controls):
+            for j, bit in enumerate(roms[i].controls[:8]):
                 if bit.value:
                     tmp.append("1")
                 else:
@@ -62,17 +66,13 @@ def main(page: ft.Page):
 
         cpu.rom.load_bin(total)
         output()
-        # print(cpu.rom.memory)
-
-    def output_randomize(e):
-        for i in range(4):
-            output_values[i] = random.randint(0, 1)
-            outputs_view.controls[i] = ft.Icon(leds[output_values[i]], size=50)
         page.update()
+
+        # print(cpu.rom.memory)
 
     def run_auto(e):
         for _ in range(300):
-            time.sleep(0.1)
+            time.sleep(0.2)
             # output_randomize("")
             # cpu.execute()
             execute(e)
@@ -96,6 +96,7 @@ def main(page: ft.Page):
         for i in range(16):
             for j in range(8):
                 roms[i].controls[j].value = False
+        load_rom("")
         page.update()
 
     page.title = "TD4 Emulator"
@@ -130,6 +131,7 @@ def main(page: ft.Page):
     clock_button = ft.TextButton(text="CLOCK", opacity=100, on_click=execute)
     run_button = ft.TextButton(text="RUN", opacity=100, on_click=run_auto)
     pc_text = ft.Text(f"Programm Counter: {cpu.pc:04b}", size=30)
+    carry_text = ft.Text(f"Carry flag: {int(cpu.carry)}", size=30)
 
     # 組合せ
     col1 = ft.Column(
@@ -148,6 +150,7 @@ def main(page: ft.Page):
             clock_button,
             run_button,
             pc_text,
+            carry_text,
             ft.Text("OUTPUTS", size=50),
             outputs_view,
             ft.Text("REGISTER A", size=50),
